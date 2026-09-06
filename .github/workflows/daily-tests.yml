@@ -1,0 +1,80 @@
+name: Daily Regression & Triage
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Runs daily at 6:00 AM UTC
+  workflow_dispatch: # Allows manual trigger anytime
+
+jobs:
+  e2e-and-api-testing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install App Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Initialize Database
+        run: |
+          python manage.py migrate
+
+      - name: Start Django Server in Background
+        run: |
+          python manage.py runserver 0.0.0.0:8000 &
+          npx wait-on http://127.0.0.1:8000 --timeout 30000
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Run Cypress E2E & API Suite
+        id: cypress
+        continue-on-error: true
+        uses: cypress-io/github-action@v6
+        with:
+          config: baseUrl=http://127.0.0.1:8000,retries=2
+          reporter: mochawesome
+          reporter_options: overwrite=false,html=false,json=true
+
+      - name: Authenticate to Jira
+        if: steps.cypress.outcome == 'failure'
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Create Jira Bug for Persistent Failures
+        if: steps.cypress.outcome == 'failure'
+        uses: atlassian/gajira-create@v3
+        with:
+          project: 'QA' # Replace with your Jira Project Key
+          issuetype: 'Bug'
+          summary: 'CI Failure: Automated Regression Detected Defect'
+          description: |
+            *Automated Defect Report*
+            - **Environment**: GitHub Actions CI Runner
+            - **Target URL**: http://127.0.0.1:8000
+            - **Trigger**: Daily Scheduled Job
+            - **Failure Status**: Failed after all retry attempts.
+          fields: '{"priority": {"name": "High"}}'
+
+      - name: Upload Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-execution-results
+          path: |
+            cypress/screenshots
+            cypress/videos
+            cypress/reports
