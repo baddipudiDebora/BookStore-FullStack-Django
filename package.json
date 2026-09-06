@@ -1,0 +1,28 @@
+{
+  "name": "bookstore-fullstack-django",
+  "version": "1.0.0",
+  "description": "[![Heroku Deployment](https://img.shields.io/badge/Hosted%20On-Heroku-430098?style=flat&logo=heroku)](https://djangopractisedemo.herokuapp.com/)\r [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)\r [![Django](https://img.shields.io/badge/Django-3.1.1-092E20?style=flat&logo=django&logoColor=white)](https://www.djangoproject.com/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baddipudiDebora/BookStore-FullStack-Django.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/baddipudiDebora/BookStore-FullStack-Django/issues"
+  },
+  "homepage": "https://github.com/baddipudiDebora/BookStore-FullStack-Django#readme",
+  "devDependencies": {
+    "cypress": "^16.0.0",
+    "mocha": "^12.0.0",
+    "mochawesome": "^8.0.1",
+    "mochawesome-merge": "^5.1.1",
+    "wait-on": "^9.1.0"
+  }
+}
