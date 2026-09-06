@@ -13,8 +13,4 @@ pytz>=2024.1
 requests-oauthlib>=1.4.0
 sqlparse>=0.5.0
 stripe>=8.0.0
-<<<<<<< HEAD
 whitenoise>=6.6.0
-=======
-whitenoise>=6.6.0
->>>>>>> ef2d57e3107677a148787059e4c19546148983c0
