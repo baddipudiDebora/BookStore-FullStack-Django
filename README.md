@@ -37,6 +37,20 @@ A full-stack e-commerce marketplace platform connecting online buyers and seller
 - **Stripe SDK** (Payment processing integration)
 
 ---
+## 📁 Project Directory Structure
+```text
+├── cypress/
+│   ├── e2e/
+│   │   ├── features/               # Human-readable Gherkin .feature files
+│   │   │   └── catalog_sorting.feature
+│   │   └── step_definitions/       # Cypress implementation logic
+│   │       └── catalog_sorting.js
+│   ├── fixtures/                   # Test data assets
+│   └── support/                    # Global configurations & custom commands
+├── cypress.config.js               # Cypress configuration & preprocessor bindings
+├── package.json
+└── README.md
+---
 
 ## 📋 Features & User Stories
 
