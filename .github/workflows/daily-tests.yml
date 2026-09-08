@@ -74,7 +74,7 @@ jobs:
         if: failure()
         uses: atlassian/gajira-create@v3
         with:
-          project: 'BOOKS5'
+          project: 'BSQA'
           issuetype: 'Bug'
           summary: 'CI Failure: Cypress BDD Test Failed on Branch ${{ github.ref_name }}'
           description: |
