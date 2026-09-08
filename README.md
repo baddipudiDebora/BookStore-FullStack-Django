@@ -34,22 +34,6 @@ A full-stack e-commerce marketplace platform connecting online buyers and seller
 - **pytz** (Timezone management)
 - **Stripe SDK** (Payment processing integration)
 
----
-## 📁 Project Directory Structure
-```text
-├── cypress/
-│   ├── e2e/
-│   │   ├── features/               # Human-readable Gherkin .feature files
-│   │   │   └── catalog_sorting.feature
-│   │   └── step_definitions/       # Cypress implementation logic
-│   │       └── catalog_sorting.js
-│   ├── fixtures/                   # Test data assets
-│   └── support/                    # Global configurations & custom commands
-├── cypress.config.js               # Cypress configuration & preprocessor bindings
-├── package.json
-└── README.md
----
-
 ## 📋 Epics & User Stories
 
 ### Epic 1: User Identity & Account Management
@@ -104,6 +88,23 @@ Consolidates all backend administrative operations, product catalog management, 
 
 ## 🔮 Future Enhancements
 - [ ] Complete full end-to-end Stripe payment gateway integration during checkout.
+
+---
+## 📁 Project Directory Structure
+```text
+├── cypress/
+│   ├── e2e/
+│   │   ├── features/               # Human-readable Gherkin .feature files
+│   │   │   └── catalog_sorting.feature
+│   │   └── step_definitions/       # Cypress implementation logic
+│   │       └── catalog_sorting.js
+│   ├── fixtures/                   # Test data assets
+│   └── support/                    # Global configurations & custom commands
+├── cypress.config.js               # Cypress configuration & preprocessor bindings
+├── package.json
+└── README.md
+---
+
 
 ---
 
