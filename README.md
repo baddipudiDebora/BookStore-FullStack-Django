@@ -89,6 +89,13 @@ Consolidates all backend administrative operations, product catalog management, 
 ## 🔮 Future Enhancements
 - [ ] Complete full end-to-end Stripe payment gateway integration during checkout.
 
+## 🚀 Local Development Setup
+
+1. **Clone Repository:**
+   ```bash
+   git clone [https://github.com/baddipudiDebora/BookStore-FullStack-Django.git](https://github.com/baddipudiDebora/BookStore-FullStack-Django.git)
+   cd BookStore-FullStack-Django
+   
 ---
 ## 📁 Project Directory Structure
 ```text
@@ -104,31 +111,3 @@ Consolidates all backend administrative operations, product catalog management, 
 ├── package.json
 └── README.md
 ---
-
-
----
-
-## 🧪 Testing & Validation
-
-### **Manual Test Scenarios Executed**
-Comprehensive manual testing was performed to verify core feature fulfillment across the platform:
-1. Verify user can view detailed product pages.
-2. Verify search functionality by product name and description.
-3. Verify search result sorting across all combinations (Category A-Z/Z-A, Ratings High/Low, Price High/Low, Name A-Z/Z-A).
-4. Verify guest users and authenticated users can add items to the shopping bag.
-5. Verify adding multiple items and removing items from the shopping bag.
-6. Verify user registration, login workflow, and profile creation/editing.
-7. Verify Superuser capabilities for adding, editing, and deleting product listings via the frontend UI.
-
-### **Responsiveness & Cross-Browser Testing**
-- Styled with Bootstrap 4 for full responsiveness across Desktop, Tablet, and Mobile devices.
-- Screen sizes tested: Desktop/Laptop view, iPad, iPhone 6/7/8 viewports.
-
----
-
-## 🚀 Local Development Setup
-
-1. **Clone Repository:**
-   ```bash
-   git clone [https://github.com/baddipudiDebora/BookStore-FullStack-Django.git](https://github.com/baddipudiDebora/BookStore-FullStack-Django.git)
-   cd BookStore-FullStack-Django
