@@ -65,9 +65,10 @@ jobs:
       - name: Log in to Jira
         if: failure()
         uses: atlassian/gajira-login@v3
-        with:
-          jira-base-url: ${{ secrets.JIRA_BASE_URL }}
-          atlassian-api-token: ${{ secrets.JIRA_API_TOKEN }}
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
       - name: Create Jira Issue on Test Failure
         if: failure()
