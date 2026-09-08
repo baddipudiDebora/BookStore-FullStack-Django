@@ -1,32 +1,30 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { BooksPage } from '../pages/BooksPage';
+
+// Initialize page object
+const booksPage = new BooksPage();
+
+/**
+ * Catalog Sorting Feature Steps
+ * These steps are now simplified by using the BooksPage object
+ */
 
 Given("I open the bookstore catalog page", () => {
-  cy.visit('/books/');
-  cy.get('body').should('be.visible');
+  booksPage.visitCatalog();
+  booksPage.verifyCatalogLoaded();
 });
 
 When("I select {string} sorting from the menu", (sortOption) => {
-  cy.contains('All Books').trigger('mouseover');
+  // Hover over category menu
+  booksPage.hoverCategory('All Books');
+  // Click the sorting option
   cy.contains(sortOption).click({ force: true });
+  // Verify the URL includes sort parameter
   cy.url().should('include', 'sort=price');
-  cy.get('#sort-selector').should('have.value', 'price_asc');
+  // Verify sort selector is set correctly
+  booksPage.verifySortedBy('price_asc');
 });
 
-// Notice the lowercase "the" here matching the feature file exactly
 Then("the books should be displayed in ascending order by price", () => {
-  cy.get('.book-container .card').then($cards => {
-    const prices = [];
-    $cards.each((index, card) => {
-      const text = Cypress.$(card).find('.font-weight-bold').text();
-      const match = text.match(/\$([0-9]+\.[0-9]{2})/);
-      if (match) {
-        prices.push(parseFloat(match[1]));
-      }
-    });
-
-    expect(prices.length).to.be.greaterThan(1);
-    for (let i = 0; i < prices.length - 1; i++) {
-      expect(prices[i]).to.be.at.most(prices[i + 1]);
-    }
-  });
+  booksPage.verifyPricesSortedAscending();
 });
