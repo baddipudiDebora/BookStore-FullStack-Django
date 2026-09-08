@@ -2,19 +2,17 @@ import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 Given('the user is on the books catalog page', () => {
   cy.visit('/books/');
-  cy.wait(2000); // Wait for page to load
+  cy.wait(1000); // Wait for page to load
 });
 
 When('the user clicks on a non-existent promotional banner', () => {
-  // Click on the first book card that exists on the page
-  cy.get('[class*="product"]').first().click({ force: true });
-  // OR use a more reliable selector:
-  // cy.contains('a', 'One indian girl').click();
+  // Click on the first book card (uses .card class from Bootstrap)
+  cy.get('.card').first().find('a').first().click();
 });
 
 Then('the checkout confirmation modal should be visible', () => {
-  // Check if we navigated to book detail or checkout
+  // Verify navigation to book detail page
   cy.url().should('include', '/books/');
-  // Or verify page has loaded
+  // Verify book details are displayed
   cy.get('body').should('be.visible');
 });
