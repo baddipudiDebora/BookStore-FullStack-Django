@@ -41,7 +41,7 @@ jobs:
       - name: Wait for Django Server
         run: npx wait-on http://127.0.0.1:8000
 
-      # Cypress test execution step (no continue-on-error, ensuring genuine failure state)
+      # Cypress test execution step
       - name: Run Cypress BDD Tests
         id: cypress
         run: npm run cy:run
@@ -65,10 +65,9 @@ jobs:
       - name: Log in to Jira
         if: failure()
         uses: atlassian/gajira-login@v3
-        env:
-          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        with:
+          jira-base-url: ${{ secrets.JIRA_BASE_URL }}
+          atlassian-api-token: ${{ secrets.JIRA_API_TOKEN }}
 
       - name: Create Jira Issue on Test Failure
         if: failure()
