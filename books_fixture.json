@@ -1,0 +1,112 @@
+[
+{
+  "model": "books.category",
+  "pk": 1,
+  "fields": {
+    "name": "Classic Literature",
+    "friendly_name": "Classic Literature"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 2,
+  "fields": {
+    "name": "Mystery and Crime",
+    "friendly_name": "Mystery and Crime"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 3,
+  "fields": {
+    "name": "Romance",
+    "friendly_name": "Romance"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 4,
+  "fields": {
+    "name": "Historical Fiction",
+    "friendly_name": "Historical Fiction"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 5,
+  "fields": {
+    "name": "price",
+    "friendly_name": "By Price"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 6,
+  "fields": {
+    "name": "rating",
+    "friendly_name": "By Ratingans"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 7,
+  "fields": {
+    "name": "category",
+    "friendly_name": "By Category"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 8,
+  "fields": {
+    "name": "Deals",
+    "friendly_name": "Deals"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 9,
+  "fields": {
+    "name": "Programming",
+    "friendly_name": "Programming"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 10,
+  "fields": {
+    "name": "Software",
+    "friendly_name": "Software"
+  }
+},
+{
+  "model": "books.category",
+  "pk": 11,
+  "fields": {
+    "name": "Web Desinging",
+    "friendly_name": "Web Desinging"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 1,
+  "fields": {
+    "category": 1,
+    "sku": "pp5001740155",
+    "name": "One indian girl",
+    "description": "One Indian Girl is the seventh fictional novel and the ninth book overall by the Indian author Chetan Bhagat.",
+    "has_sizes": false,
+    "price": "25.99",
+    "rating": "4.60",
+    "image_url": "https://github.com/baddipudiDebora/mongobdproject1/blob/master/media/Chetan%20Bhagat.jpg",
+    "image": "Chetan Bhagat.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 2,
+  "fields": {
+    "category": 10,
+    "sku": "pp5001600625",
+    "name": "Excel Formulas and Functions",
+    "description": 
