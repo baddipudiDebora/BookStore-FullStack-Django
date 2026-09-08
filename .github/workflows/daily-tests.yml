@@ -24,9 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Django Migrations & Start Server
+      - name: Prepare Database & Start Server
         run: |
           python manage.py migrate
+          python manage.py loaddata books/fixtures/books.json 2>/dev/null || true
           python manage.py runserver 8000 &
 
       - name: Set up Node.js
@@ -47,9 +48,13 @@ jobs:
       - name: Generate Mochawesome HTML Report
         run: npm run report
 
-      - name: Upload Test Report Artifact
+      - name: Upload Test Artifacts (Reports, Screenshots, Videos)
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: mochawesome-html-report
-          path: cypress/reports/
-          if-no-files-found: error
+          name: cypress-test-artifacts
+          path: |
+            cypress/reports/
+            cypress/screenshots/
+            cypress/videos/
+          if-no-files-found: ignore
