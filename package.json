@@ -4,7 +4,10 @@
   "description": "[![Heroku Deployment](https://img.shields.io/badge/Hosted%20On-Heroku-430098?style=flat&logo=heroku)](https://djangopractisedemo.herokuapp.com/)\r [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)\r [![Django](https://img.shields.io/badge/Django-3.1.1-092E20?style=flat&logo=django&logoColor=white)](https://www.djangoproject.com/)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "cy:open": "cypress open",
+  "cy:run": "cypress run",
+  "report": "node generate-report.js",
+  "test:ci": "cypress run || npm run report"
   },
   "repository": {
     "type": "git",
@@ -22,10 +25,12 @@
     "@badeball/cypress-cucumber-preprocessor": "^28.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
     "cypress": "^16.0.0",
+    "cypress-multi-reporters": "^2.0.5",
     "esbuild": "^0.28.2",
     "mocha": "^12.0.0",
     "mochawesome": "^8.0.1",
     "mochawesome-merge": "^5.1.1",
+    "mochawesome-report-generator": "^6.3.2",
     "wait-on": "^9.1.0"
   }
 }

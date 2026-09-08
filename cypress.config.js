@@ -7,18 +7,21 @@ module.exports = defineConfig({
   e2e: {
     baseUrl: "http://127.0.0.1:8000",
     specPattern: "cypress/e2e/features/**/*.feature",
+    reporter: "mochawesome",
+    reporterOptions: {
+      reportDir: "cypress/results",
+      overwrite: false,
+      html: false,
+      json: true,
+    },
     async setupNodeEvents(on, config) {
-      // Register Cucumber preprocessor event handlers
       await addCucumberPreprocessorPlugin(on, config);
-
       on(
         "file:preprocessor",
         createBundler({
           plugins: [createEsbuildPlugin(config)],
         })
       );
-
-      // Must return config object
       return config;
     },
   },
