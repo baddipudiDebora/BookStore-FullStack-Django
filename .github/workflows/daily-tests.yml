@@ -27,7 +27,7 @@ jobs:
       - name: Prepare Database & Start Server
         run: |
           python manage.py migrate
-          python manage.py loaddata books/fixtures/books.json 2>/dev/null || true
+          python manage.py loaddata books_fixture.json
           python manage.py runserver 8000 &
 
       - name: Set up Node.js
