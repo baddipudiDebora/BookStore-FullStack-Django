@@ -6,8 +6,6 @@
 
 A full-stack e-commerce marketplace platform connecting online buyers and sellers. Sellers can manage book inventories while users can browse, search, filter, and purchase books online.
 
-🔗 **Live Application:** [djangopractisedemo.herokuapp.com](https://djangopractisedemo.herokuapp.com/)
-
 ---
 
 ## 🛠️ Tech Stack & Dependencies
