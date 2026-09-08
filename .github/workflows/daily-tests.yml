@@ -41,11 +41,13 @@ jobs:
       - name: Wait for Django Server
         run: npx wait-on http://127.0.0.1:8000
 
+      # Cypress test execution step (no continue-on-error, ensuring genuine failure state)
       - name: Run Cypress BDD Tests
+        id: cypress
         run: npm run cy:run
-        continue-on-error: true
 
       - name: Generate Mochawesome HTML Report
+        if: always()
         run: npm run report
 
       - name: Upload Test Artifacts (Reports, Screenshots, Videos)
@@ -58,3 +60,30 @@ jobs:
             cypress/screenshots/
             cypress/videos/
           if-no-files-found: ignore
+
+      # --- AUTOMATED JIRA DEFECT REPORTING ---
+      - name: Log in to Jira
+        if: failure()
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Create Jira Issue on Test Failure
+        if: failure()
+        uses: atlassian/gajira-create@v3
+        with:
+          project: 'BSQA'
+          issuetype: 'Bug'
+          summary: 'CI Failure: Cypress BDD Test Failed on Branch ${{ github.ref_name }}'
+          description: |
+            *Automated Defect Report from GitHub Actions*
+            
+            * **Workflow Name:** ${{ github.workflow }}
+            * **Run ID:** ${{ github.run_id }}
+            * **Commit SHA:** ${{ github.sha }}
+            * **Triggered By:** ${{ github.actor }}
+            * **Branch:** ${{ github.ref_name }}
+            
+            Check the uploaded `cypress-test-artifacts` zip file in GitHub Actions for execution videos, screenshots, and Mochawesome reports.
