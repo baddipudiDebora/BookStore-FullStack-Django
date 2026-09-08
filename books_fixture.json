@@ -109,4 +109,387 @@
     "category": 10,
     "sku": "pp5001600625",
     "name": "Excel Formulas and Functions",
-    "description": 
+    "description": "Being able to work with Excel Formulas can take your experience with the program to a ... Functions are the built-‐in algorithms that are incorporated into formulas",
+    "has_sizes": false,
+    "price": "78.99",
+    "rating": "4.60",
+    "image_url": "https://github.com/baddipudiDebora/mongobdproject1/blob/master/media/Excel%20Formulas%20and%20Functions.jpg",
+    "image": "Excel Formulas and Functions.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 3,
+  "fields": {
+    "category": 2,
+    "sku": "pp5001340155",
+    "name": "The Girl with the Dragon Tatto",
+    "description": "The Girl with the Dragon Tattoo is a 2011 psychological crime thriller film based on the 2005 ",
+    "has_sizes": false,
+    "price": "43.99",
+    "rating": "4.60",
+    "image_url": "https://github.com/baddipudiDebora/mongobdproject1/blob/master/media/The%20Girl%20with%20the%20Dragon%20Tatto.jpg",
+    "image": "The Girl with the Dragon Tatto.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 4,
+  "fields": {
+    "category": 3,
+    "sku": "pp5001600425",
+    "name": "Accidental Wife",
+    "description": "Nikki's got a plan to keep her boss in line, but can she count on Jonah to help her? Nikki's boss, Eric, wouldn't stop hitting on her, and she needed to do something about it.",
+    "has_sizes": false,
+    "price": "58.99",
+    "rating": "4.60",
+    "image_url": "https://github.com/baddipudiDebora/mongobdproject1/blob/master/media/Excel%20Formulas%20and%20Functions.jpg",
+    "image": "Accidental wife.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 5,
+  "fields": {
+    "category": 9,
+    "sku": "pp5001340154",
+    "name": "Python Programming. Python Programming for Beginners, Python Programming for Intermediates",
+    "description": "This Python Programming Bundle includes all 3 books Python Programming For Beginners Python Programming For Intermediates Python Programming For Advanced",
+    "has_sizes": false,
+    "price": "53.99",
+    "rating": "4.60",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=6f1fc35b-0793-4ca5-ba3b-bec459658fc2",
+    "image": "python programming.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 6,
+  "fields": {
+    "category": 10,
+    "sku": "pp5001609425",
+    "name": "COMPUTER HARDWARE AND SOFTWARE",
+    "description": "Being able to work with Excel Formulas can take your experience with the program to a ... Functions are the built-‐in algorithms that are incorporated into formulas",
+    "has_sizes": false,
+    "price": "58.99",
+    "rating": "4.60",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=c37b61d9-686d-48d3-a3e8-f02da0e053cc",
+    "image": "COMPUTER HARDWARE AND SOFTWARE.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 7,
+  "fields": {
+    "category": 10,
+    "sku": "pp5001340155",
+    "name": "IT Essentials: PC Hardware and Software Labs and Study Guide",
+    "description": "IT Essentials PC Hardware and Software Labs and Study Guide, Third Edition Patrick Regan The IT Essentials: PC Hardware and Software version 4 course in the Cisco Networking Academy is designed to prepare you to take and pass the CompTIA A+ exams based on the 2006 objectives.",
+    "has_sizes": false,
+    "price": "53.99",
+    "rating": "4.60",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=e4d112a8-3eb4-4fa5-ad60-0779bd8fc36d",
+    "image": "IT Essentials PC Hardware and Software Labs and Study Guide.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 8,
+  "fields": {
+    "category": 11,
+    "sku": "pp5801600425",
+    "name": "Create mobile apps with HTML5, JavaScript and Visual Studio",
+    "description": "... December 2010. comScore MobiLens 2010. Java. J2ME. Air. C++. C#. Obj-C. JS ... Semantic HTML. CSS Styling & Layout. ",
+    "has_sizes": false,
+    "price": "98.99",
+    "rating": "4.60",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=bf23ffbd-55d4-47ec-942d-f5fe866ca538",
+    "image": "Create mobile apps with HTML5, JavaScript and Visual Studio.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 9,
+  "fields": {
+    "category": 10,
+    "sku": "pp5001600425",
+    "name": "Google Maps JavaScript API Cookbook: Over 50 recipes to help you create web maps and GIS web",
+    "description": "Over 50 recipes to help you create web maps and GIS web applications using the Google Maps JavaScript API Overview Add to your website's functionality by utilizing Google Maps' power Full of code examples and screenshots for practical and efficient learning Empowers you to build your own mapping application from the ground up In Detail Day by day, the use of location data is becoming more and more popular, and Google is one of the main game changers in this area.",
+    "has_sizes": false,
+    "price": "75.00",
+    "rating": "3.90",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=8d0602c3-8920-4c99-a42c-3edbfae000af",
+    "image": "Google Maps JavaScript API Cookbook.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 10,
+  "fields": {
+    "category": 3,
+    "sku": "pp5001609425",
+    "name": "Dangerous Men & Adventurous Women: Romance Writers on the Appeal of the Romance",
+    "description": "",
+    "has_sizes": false,
+    "price": "70.00",
+    "rating": "4.00",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=cb29dcd8-6d3f-4557-9477-19efb8c1011e",
+    "image": "Dangerous Men & Adventurous Women.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 11,
+  "fields": {
+    "category": 3,
+    "sku": "pp8001609425",
+    "name": "The Psychology of Self-Esteem",
+    "description": "What is it in the nature of reality and of mind that makes self- esteem an urgent concern? This is where our",
+    "has_sizes": false,
+    "price": "85.00",
+    "rating": "4.20",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=4ddb63e9-3ca8-41df-bd08-4909f6eb3249",
+    "image": "The Psychology of Self-Esteem.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 12,
+  "fields": {
+    "category": 1,
+    "sku": "pp8001609928",
+    "name": "Healing your Emotional Self",
+    "description": "Healing your Emotional Self - A Powerful Program to Help you Raise your Self-Esteem, Quiet your Inner",
+    "has_sizes": false,
+    "price": "68.00",
+    "rating": "4.80",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=b6c63dc2-ef38-4c6b-a3d2-2b21acc19f0e",
+    "image": "Healing your Emotional Self.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 13,
+  "fields": {
+    "category": 1,
+    "sku": "pp8901609928",
+    "name": "The Purpose-Driven Life: What on Earth Am I Here For?",
+    "description": "Before you were born, God already planned your life. God longs for you to discover the life he created you to live--here on earth, and forever in eternity. Let The Purpose Driven Life show you how. The Purpose Driven Life is available in audio book, ebook, softcover, and hardcover editions.",
+    "has_sizes": false,
+    "price": "59.00",
+    "rating": "4.70",
+    "image_url": "https://d590f570-fbc3-4baa-ae90-ed2a33c39a79.ws-us02.gitpod.io/files/download/?id=d2f9be80-2522-468f-95d1-1e9da09781ed",
+    "image": "The Purpose-Driven Life.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 14,
+  "fields": {
+    "category": 1,
+    "sku": "pp8901609928",
+    "name": "Let Your Life Speak: Listening for the Voice of Vocation",
+    "description": "Vocation does not come from willfulness, no matter how noble one's intentions. It comes from listening to and accepting “true self” with its limits as well as its ...",
+    "has_sizes": false,
+    "price": "59.00",
+    "rating": "4.30",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=d9fe4533-254c-4a53-8ea4-6bc9af16141e",
+    "image": "Let Your Life Speak.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 15,
+  "fields": {
+    "category": 1,
+    "sku": "pp5001679425",
+    "name": "Time Management Proven Techniques for Making Every Minute Count",
+    "description": "This will help you create a mini-plan for each task, and a workable, productive agenda for your day. This is just one tip from Time Management, Second Edition.",
+    "has_sizes": false,
+    "price": "35.00",
+    "rating": "4.20",
+    "image_url": "https://d590f570-fbc3-4baa-ae90-ed2a33c39a79.ws-us02.gitpod.io/files/download/?id=4b5db9f0-7e74-44a8-83c9-cac3f70a976e",
+    "image": "Time Management Proven Techniques.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 16,
+  "fields": {
+    "category": 1,
+    "sku": "pp5001609425",
+    "name": "Set Your Voice Free: How to Get the Singing or Speaking Voice You Want",
+    "description": "Set Your Voice Free: How To Get The Singing Or Speaking ...www.amazon.ca › Set-Your-Voice-Free-Speaking With innovative techniques and enjoyable exercises that have worked wonders with his professional clients.",
+    "has_sizes": false,
+    "price": "78.00",
+    "rating": "4.20",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=3fa075a6-f03b-41fc-b9cf-472d85d7b61b",
+    "image": "Set Your Voice.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 17,
+  "fields": {
+    "category": 3,
+    "sku": "pp8001609425",
+    "name": "Resisting Happiness: A True Story about Why We Sabotage Ourselves",
+    "description": "Resisting Happiness is a deeply personal, disarmingly transparent look at why we sabotage our own happiness and what to do about it. Are you overwhelmed?",
+    "has_sizes": false,
+    "price": "95.00",
+    "rating": "4.20",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=4ddb63e9-3ca8-41df-bd08-4909f6eb3249",
+    "image": "Resisting Happiness.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 18,
+  "fields": {
+    "category": 8,
+    "sku": "pp8001609928",
+    "name": "I am Malala",
+    "description": "I am Malala: The Story of the Girl Who Stood Up for Education",
+    "has_sizes": false,
+    "price": "85.00",
+    "rating": "4.20",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=b6c63dc2-ef38-4c6b-a3d2-2b21acc19f0e",
+    "image": "I am Malala.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 19,
+  "fields": {
+    "category": 2,
+    "sku": "pp8901809998",
+    "name": "The Mammoth Book of Perfect Crimes and Impossible Mysterie",
+    "description": "Mystery conundrums from crime's finest storytellersPresenting 30 impossible mysteries and bizarre crimes guaranteed to fascinate and intrigue. ...",
+    "has_sizes": false,
+    "price": "69.00",
+    "rating": "4.60",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=6db968b7-318e-4df6-8e79-bf1367bcd086",
+    "image": "The Mammoth Book.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 20,
+  "fields": {
+    "category": 2,
+    "sku": "pp8901809998",
+    "name": "The Book of Secrets: 112 Meditations to Discover the Mystery Within",
+    "description": "The Vijñāna Bhairava Tantra is a key Tantra text of the Trika school of Pratyabhijna/Kashmir Shaivism in Sanskrit language. Cast as a discourse between the god Bhairava and his consort Bhairavi, it briefly presents 112 Tantric meditation methods or centering techniques. ..",
+    "has_sizes": false,
+    "price": "79.00",
+    "rating": "3.90",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=a5e14178-7a8a-4c38-bc36-3dab4a3c859b",
+    "image": "The Book of Secrets.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 21,
+  "fields": {
+    "category": 2,
+    "sku": "pp8901009998",
+    "name": "Nancy Drew Mystery Book 1 The Secret of the Old Clock",
+    "description": "..",
+    "has_sizes": false,
+    "price": "89.00",
+    "rating": "4.90",
+    "image_url": "https://fab43189-2c63-487d-8ef0-7e3fc9c362d0.ws-us02.gitpod.io/files/download/?id=3c1045d6-aad8-4b75-9935-765095f02303",
+    "image": "Nancy Drew Mystery Book.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 22,
+  "fields": {
+    "category": 2,
+    "sku": "pp8901009998",
+    "name": "The Book of Secret Wisdom - The Prophetic Record of Human Destiny and Evolution",
+    "description": "Hidden away for long millennia, the world's most ancient sacred text now reveals the past, present, and future of humanity. The Book of Secret Wisdom. A million years ago, the Great Masters of Wisdom recorded a mysterious manuscript.",
+    "has_sizes": false,
+    "price": "78.00",
+    "rating": "5.00",
+    "image_url": null,
+    "image": "The Book of Secret Wisdom.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 23,
+  "fields": {
+    "category": 4,
+    "sku": "pp8901009998",
+    "name": "From Modernism to Postmodernism: Concepts and Strategies of Postmodern American",
+    "description": " Open your mouth only if what you are going to say is more beautiful than the silience. ” ― BUDDHA",
+    "has_sizes": false,
+    "price": "89.00",
+    "rating": "4.90",
+    "image_url": null,
+    "image": "From Modernism to Postmodernism.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 24,
+  "fields": {
+    "category": 4,
+    "sku": "pp8901009998",
+    "name": "Modern French Philosophy: From Existentialism to Postmodernism",
+    "description": " “ Almost everything will work again if you unplug it for a few minutes, including you. ” ― Anne Lamott",
+    "has_sizes": false,
+    "price": "89.00",
+    "rating": "4.90",
+    "image_url": null,
+    "image": "Modern French Philosophy.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 25,
+  "fields": {
+    "category": 8,
+    "sku": "pp8901909998",
+    "name": "Start Where You Are: A Guide to Compassionate Living",
+    "description": "“ Every block of stone has a statue inside it and it is the task of the sculptor to discover it. ” ― Michelangelo",
+    "has_sizes": false,
+    "price": "25.00",
+    "rating": "4.60",
+    "image_url": null,
+    "image": "Start Where You Are.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 26,
+  "fields": {
+    "category": 8,
+    "sku": "pp8901909998",
+    "name": "The Monk Who Sold His Ferrari",
+    "description": "“ Don't ruin a good today by thinking about a bad yesterday. Let it go. ” ― Anonymous",
+    "has_sizes": false,
+    "price": "25.00",
+    "rating": "4.90",
+    "image_url": null,
+    "image": "The Monk Who Sold His Ferrari.jpg"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 27,
+  "fields": {
+    "category": 8,
+    "sku": "pp8901909998",
+    "name": "Who Will Cry When You Die?",
+    "description": "“ I want to sing like the birds sing, not worrying about who hears or what they think. ” ― Rumi",
+    "has_sizes": false,
+    "price": "25.00",
+    "rating": "4.60",
+    "image_url": null,
+    "image": "Who Will Cry When You Die.jpg"
+  }
+}
+]
