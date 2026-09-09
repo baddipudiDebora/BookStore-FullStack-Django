@@ -95,7 +95,20 @@ Consolidates all backend administrative operations, product catalog management, 
    ```bash
    git clone [https://github.com/baddipudiDebora/BookStore-FullStack-Django.git](https://github.com/baddipudiDebora/BookStore-FullStack-Django.git)
    cd BookStore-FullStack-Django
-   
+ ## 🧪 Shift-Left Automation Strategy Matrix
+
+| Epic | Story ID | User Story Title | Test Strategy | Recommended Target Level | Shift-Left Benefit & Automation Rationale |
+| :--- | :---: | :--- | :---: | :--- | :--- |
+| **Epic 1: User Identity** | **US-01** | Registration & Login | `API First` | `POST /api/register/`<br>`POST /api/login/` | Validates payload schema, DB user creation, duplicate rejections (400 Bad Request), and auth token generation without rendering forms. |
+| **Epic 1: User Identity** | **US-02** | Session & Auth Management | `API First` | `GET /api/checkout/`<br>`POST /api/logout/` | Verifies 401/403 middleware security headers and session token invalidation fast without UI navigation. |
+| **Epic 1: User Identity** | **US-03** | Admin Authorization | `API First` | REST API with Role Tokens | Directly tests backend Role-Based Access Control (RBAC). Ensures API blocks unauthorized access regardless of UI hiding. |
+| **Epic 2: Storefront & Cart** | **US-04** | Browse, Search & Sort | `API First` | `GET /api/books/?search=...`<br>`GET /api/books/?sort=...` | Validates Django ORM filtering, search queries, and `.order_by()` JSON structure significantly faster than DOM parsing. |
+| **Epic 2: Storefront & Cart** | **US-05** | Product Details View | `UI Reserved` | Cypress / Playwright DOM | Validates dynamic visual page layout, cover image rendering, dynamic routing, and DOM element accessibility. |
+| **Epic 2: Storefront & Cart** | **US-06** | Cart Operations | `Hybrid` | API State + UI Badge Check | API handles item totals and state math; UI smoke test validates real-time shopping cart badge counter updates. |
+| **Epic 2: Storefront & Cart** | **US-07** | Checkout & Orders | `Hybrid` | API Process + 1 UI Smoke | API tests address payload processing & checkout submission; single E2E UI flow tests end-to-end user checkout experience. |
+| **Epic 3: Admin & Fulfillment**| **US-08** | Catalog CRUD Operations | `API First` | `POST / PUT / DELETE /api/books/` | Bypasses admin UI to directly test DB persistence, field validation errors (e.g., negative price), and object deletion. |
+| **Epic 3: Admin & Fulfillment**| **US-09** | Inventory Stock Control | `API First` | `PATCH /api/books/{id}/` | Validates zero-stock boundary limits and ensures backend returns 400 Out of Stock before frontend controls are built. |
+| **Epic 3: Admin & Fulfillment**| **US-10** | Order Fulfillment | `API First` | `GET /api/admin/orders/` | Directly validates order payload structures, status transition flags, and database record creation. |  
 ---
 ## 📁 Project Directory Structure
 ```text
