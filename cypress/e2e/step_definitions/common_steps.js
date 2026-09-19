@@ -37,11 +37,6 @@ When('the user clicks on book at index {int}', (index) => {
   booksPage.clickBookByIndex(index);
 });
 
-When('I select {string} sorting from the menu', (sortOption) => {
-  booksPage.hoverCategory('All Books');
-  cy.contains(sortOption).click({ force: true });
-});
-
 When('the user sorts books by {string}', (sortOption) => {
   booksPage.sortBy(sortOption);
 });
@@ -68,10 +63,6 @@ Then('the user should be on the book detail page', () => {
 
 Then('the book detail page should be visible', () => {
   bookDetailPage.verifyDetailPageLoaded();
-});
-
-Then('the books should be displayed in ascending order by price', () => {
-  booksPage.verifyPricesSortedAscending();
 });
 
 Then('the user should see {int} books', (count) => {
