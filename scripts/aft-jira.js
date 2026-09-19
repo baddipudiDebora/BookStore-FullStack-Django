@@ -87,15 +87,23 @@ function issueSummary(spec) {
   return `AFT: ${path.basename(spec)} failed on ${branch}`;
 }
 
-async function findIssue(summary) {
-  const jql = `project = ${jiraProject} AND statusCategory != Done AND summary ~ "${summary.replace(/"/g, '\\"')}" ORDER BY created DESC`;
+async function findIssueBySummary(summary) {
+  const jql = `project = ${jiraProject} AND statusCategory != Done AND summary = "${summary.replace(/"/g, '\\"')}" ORDER BY created DESC`;
   const result = await jiraRequest(`/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}&maxResults=1&fields=summary,status,labels`);
   return result.issues?.[0] || null;
 }
 
+async function findIssue(spec) {
+  const currentIssue = await findIssueBySummary(issueSummary(spec));
+  if (currentIssue) return currentIssue;
+
+  // Recover issues created by the previous generic Jira workflow.
+  return findIssueBySummary(`CI Failure: Cypress BDD Test Failed on Branch ${branch}`);
+}
+
 async function createIssue(spec) {
   const summary = issueSummary(spec);
-  const issue = await findIssue(summary);
+  const issue = await findIssueBySummary(summary);
   if (issue) return issue;
 
   const result = await jiraRequest('/rest/api/3/issue', {
@@ -123,11 +131,10 @@ async function addComment(issueKey, text) {
 }
 
 async function addLabel(issue, label) {
-  const labels = [...new Set([...(issue.fields.labels || []), label])];
   await jiraRequest(`/rest/api/3/issue/${issue.key}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: { labels } }),
+    body: JSON.stringify({ update: { labels: [{ add: label }] } }),
   });
 }
 
@@ -163,12 +170,16 @@ async function processFailure(spec) {
   console.log(`AFT failure recorded in ${issue.key}`);
 }
 
+const recoveredIssueKeys = new Set();
+
 async function processRecovery(spec) {
-  const issue = await findIssue(issueSummary(spec));
+  const issue = await findIssue(spec);
   if (!issue) {
     console.log(`No previous AFT issue found for ${spec}.`);
     return;
   }
+  if (recoveredIssueKeys.has(issue.key)) return;
+  recoveredIssueKeys.add(issue.key);
 
   const screenshotPath = getScreenshotForSpec(spec);
   await attachScreenshot(issue.key, screenshotPath);
