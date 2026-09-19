@@ -62,28 +62,21 @@ jobs:
           if-no-files-found: ignore
 
       # --- AUTOMATED JIRA DEFECT REPORTING ---
-      - name: Log in to Jira
-        if: failure()
-        uses: atlassian/gajira-login@v3
+      - name: Process AFT Jira issues
+        if: always()
         env:
+          AFT_ENABLED: ${{ secrets.JIRA_BASE_URL != '' && secrets.JIRA_USER_EMAIL != '' && secrets.JIRA_API_TOKEN != '' }}
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-
-      - name: Create Jira Issue on Test Failure
-        if: failure()
-        uses: atlassian/gajira-create@v3
-        with:
-          project: 'BSQA'
-          issuetype: 'Bug'
-          summary: 'CI Failure: Cypress BDD Test Failed on Branch ${{ github.ref_name }}'
-          description: |
-            *Automated Defect Report from GitHub Actions*
-            
-            * **Workflow Name:** ${{ github.workflow }}
-            * **Run ID:** ${{ github.run_id }}
-            * **Commit SHA:** ${{ github.sha }}
-            * **Triggered By:** ${{ github.actor }}
-            * **Branch:** ${{ github.ref_name }}
-            
-            Check the uploaded `cypress-test-artifacts` zip file in GitHub Actions for execution videos, screenshots, and Mochawesome reports.
+          JIRA_PROJECT: BSQA
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$AFT_ENABLED" != "true" ]; then
+            echo "AFT Jira integration is not configured; skipping."
+            exit 0
+          fi
+          npm run aft:process

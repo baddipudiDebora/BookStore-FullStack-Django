@@ -15,3 +15,11 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+
+afterEach(function () {
+	if (this.currentTest.state === 'passed') {
+		cy.screenshot(`${Cypress.spec.name}/${this.currentTest.title}`, {
+			capture: 'runner',
+		});
+	}
+});

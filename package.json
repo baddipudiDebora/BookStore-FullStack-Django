@@ -7,6 +7,7 @@
   "cy:open": "cypress open",
   "cy:run": "cypress run",
   "report": "node generate-report.js",
+  "aft:process": "node scripts/aft-jira.js",
   "test:ci": "cypress run || npm run report"
   },
   "repository": {
