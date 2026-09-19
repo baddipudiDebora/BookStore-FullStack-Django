@@ -5,6 +5,10 @@ const jiraBaseUrl = process.env.JIRA_BASE_URL?.replace(/\/$/, '');
 const jiraUserEmail = process.env.JIRA_USER_EMAIL;
 const jiraApiToken = process.env.JIRA_API_TOKEN;
 const jiraProject = process.env.JIRA_PROJECT || 'BSQA';
+const recoveryIssueKeys = (process.env.AFT_RECOVERY_ISSUE_KEYS || '')
+  .split(',')
+  .map((key) => key.trim())
+  .filter(Boolean);
 const branch = process.env.GITHUB_REF_NAME || 'local';
 const runUrl = process.env.GITHUB_SERVER_URL && process.env.GITHUB_REPOSITORY && process.env.GITHUB_RUN_ID
   ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
@@ -93,9 +97,20 @@ async function findIssueBySummary(summary) {
   return result.issues?.[0] || null;
 }
 
+async function findIssueByKey(issueKey) {
+  const issue = await jiraRequest(`/rest/api/3/issue/${encodeURIComponent(issueKey)}?fields=summary,status,labels`);
+  if (issue.fields.status?.statusCategory?.key === 'done') return null;
+  return issue;
+}
+
 async function findIssue(spec) {
   const currentIssue = await findIssueBySummary(issueSummary(spec));
   if (currentIssue) return currentIssue;
+
+  for (const issueKey of recoveryIssueKeys) {
+    const issue = await findIssueByKey(issueKey);
+    if (issue) return issue;
+  }
 
   // Recover issues created by the previous generic Jira workflow.
   return findIssueBySummary(`CI Failure: Cypress BDD Test Failed on Branch ${branch}`);
