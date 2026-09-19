@@ -5,10 +5,12 @@ const jiraBaseUrl = process.env.JIRA_BASE_URL?.replace(/\/$/, '');
 const jiraUserEmail = process.env.JIRA_USER_EMAIL;
 const jiraApiToken = process.env.JIRA_API_TOKEN;
 const jiraProject = process.env.JIRA_PROJECT || 'BSQA';
-const recoveryIssueKeys = (process.env.AFT_RECOVERY_ISSUE_KEYS || '')
-  .split(',')
-  .map((key) => key.trim())
-  .filter(Boolean);
+const recoveryIssueMap = new Map(
+  (process.env.AFT_RECOVERY_ISSUE_MAP || '')
+    .split(',')
+    .map((entry) => entry.split('=').map((value) => value.trim()))
+    .filter(([spec, issueKey]) => spec && issueKey)
+);
 const branch = process.env.GITHUB_REF_NAME || 'local';
 const runUrl = process.env.GITHUB_SERVER_URL && process.env.GITHUB_REPOSITORY && process.env.GITHUB_RUN_ID
   ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
@@ -91,35 +93,56 @@ function issueSummary(spec) {
   return `AFT: ${path.basename(spec)} failed on ${branch}`;
 }
 
-async function findIssueBySummary(summary) {
-  const jql = `project = ${jiraProject} AND statusCategory != Done AND summary = "${summary.replace(/"/g, '\\"')}" ORDER BY created DESC`;
-  const result = await jiraRequest(`/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}&maxResults=1&fields=summary,status,labels`);
-  return result.issues?.[0] || null;
+function testLabel(spec) {
+  return `aft-test-${path.basename(spec).replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()}`;
+}
+
+async function findIssuesByJql(jql, maxResults = 100) {
+  const result = await jiraRequest(`/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}&maxResults=${maxResults}&fields=summary,status,labels,description`);
+  return result.issues || [];
 }
 
 async function findIssueByKey(issueKey) {
-  const issue = await jiraRequest(`/rest/api/3/issue/${encodeURIComponent(issueKey)}?fields=summary,status,labels`);
-  if (issue.fields.status?.statusCategory?.key === 'done') return null;
-  return issue;
+  return jiraRequest(`/rest/api/3/issue/${encodeURIComponent(issueKey)}?fields=summary,status,labels,description`);
 }
 
-async function findIssue(spec) {
-  const currentIssue = await findIssueBySummary(issueSummary(spec));
-  if (currentIssue) return currentIssue;
+function uniqueIssues(issues) {
+  return [...new Map(issues.map((issue) => [issue.key, issue])).values()];
+}
 
-  for (const issueKey of recoveryIssueKeys) {
-    const issue = await findIssueByKey(issueKey);
-    if (issue) return issue;
+async function findIssues(spec) {
+  const label = testLabel(spec);
+  const specName = path.basename(spec);
+  const automationIssues = await findIssuesByJql(
+    `project = ${jiraProject} AND statusCategory != Done AND labels = automation-failure ORDER BY created DESC`
+  );
+  const matchingIssues = automationIssues.filter((issue) => {
+    const description = JSON.stringify(issue.fields.description || '');
+    return (issue.fields.labels || []).includes(label)
+      || issue.fields.summary === issueSummary(spec)
+      || description.includes(specName);
+  });
+
+  const mappedIssueKey = recoveryIssueMap.get(specName);
+  if (mappedIssueKey) {
+    matchingIssues.push(await findIssueByKey(mappedIssueKey));
   }
 
   // Recover issues created by the previous generic Jira workflow.
-  return findIssueBySummary(`CI Failure: Cypress BDD Test Failed on Branch ${branch}`);
+  if (!matchingIssues.length) {
+    const legacyIssues = await findIssuesByJql(
+      `project = ${jiraProject} AND statusCategory != Done AND summary = "CI Failure: Cypress BDD Test Failed on Branch ${branch}"`
+    );
+    matchingIssues.push(...legacyIssues);
+  }
+
+  return uniqueIssues(matchingIssues.filter(Boolean));
 }
 
 async function createIssue(spec) {
   const summary = issueSummary(spec);
-  const issue = await findIssueBySummary(summary);
-  if (issue) return issue;
+  const issues = await findIssues(spec);
+  if (issues.length) return issues[0];
 
   const result = await jiraRequest('/rest/api/3/issue', {
     method: 'POST',
@@ -129,7 +152,7 @@ async function createIssue(spec) {
         project: { key: jiraProject },
         issuetype: { name: 'Bug' },
         summary,
-        labels: ['automation-failure'],
+        labels: ['automation-failure', testLabel(spec)],
         description: adfText(`Automated Cypress failure for ${spec}. Run: ${runUrl}`),
       },
     }),
@@ -180,32 +203,33 @@ async function closeIssue(issue) {
 }
 
 async function processFailure(spec) {
-  const issue = await createIssue(spec);
-  await addComment(issue, `Cypress still fails for ${spec}. Run: ${runUrl}`);
-  console.log(`AFT failure recorded in ${issue.key}`);
+  const issues = await findIssues(spec);
+  const failureIssues = issues.length ? issues : [await createIssue(spec)];
+  for (const issue of failureIssues) {
+    await addComment(issue.key, `Cypress still fails for ${spec}. Run: ${runUrl}`);
+    console.log(`AFT failure recorded in ${issue.key}`);
+  }
 }
 
-const recoveredIssueKeys = new Set();
-
 async function processRecovery(spec) {
-  const issue = await findIssue(spec);
-  if (!issue) {
+  const issues = await findIssues(spec);
+  if (!issues.length) {
     console.log(`No previous AFT issue found for ${spec}.`);
     return;
   }
-  if (recoveredIssueKeys.has(issue.key)) return;
-  recoveredIssueKeys.add(issue.key);
 
   const screenshotPath = getScreenshotForSpec(spec);
-  await attachScreenshot(issue.key, screenshotPath);
-  await addComment(issue.key, `Cypress passed for ${spec}. Passing-run screenshot attached. Run: ${runUrl}`);
+  for (const issue of issues) {
+    await attachScreenshot(issue.key, screenshotPath);
+    await addComment(issue.key, `Cypress passed for ${spec}. Passing-run screenshot attached. Run: ${runUrl}`);
 
-  if ((issue.fields.labels || []).includes('aft-closable')) {
-    await closeIssue(issue);
-    console.log(`AFT issue ${issue.key} closed after recovery.`);
-  } else {
-    await addLabel(issue, 'aft-closable');
-    console.log(`AFT issue ${issue.key} marked aft-closable after recovery.`);
+    if ((issue.fields.labels || []).includes('aft-closable')) {
+      await closeIssue(issue);
+      console.log(`AFT issue ${issue.key} closed after recovery.`);
+    } else {
+      await addLabel(issue, 'aft-closable');
+      console.log(`AFT issue ${issue.key} marked aft-closable after recovery.`);
+    }
   }
 }
 

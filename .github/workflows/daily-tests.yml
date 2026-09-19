@@ -66,7 +66,7 @@ jobs:
         if: always()
         env:
           AFT_ENABLED: ${{ secrets.JIRA_BASE_URL != '' && secrets.JIRA_USER_EMAIL != '' && secrets.JIRA_API_TOKEN != '' }}
-          AFT_RECOVERY_ISSUE_KEYS: BSQA-26
+          AFT_RECOVERY_ISSUE_MAP: catalog_sorting.feature=BSQA-26,user_checkout.feature=BSQA-27
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
