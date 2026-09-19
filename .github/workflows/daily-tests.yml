@@ -65,11 +65,12 @@ jobs:
       - name: Process AFT Jira issues
         if: always()
         env:
-          AFT_ENABLED: ${{ secrets.JIRA_BASE_URL != '' && secrets.JIRA_USER_EMAIL != '' && secrets.JIRA_API_TOKEN != '' }}
-          AFT_RECOVERY_ISSUE_MAP: catalog_sorting.feature=BSQA-26,user_checkout.feature=BSQA-27
+          AFT_ENABLED: ${{ secrets.JIRA_BASE_URL != '' && secrets.JIRA_USER_EMAIL != '' && secrets.JIRA_API_TOKEN != '' && secrets.JIRA_REPORTER_ACCOUNT_ID != '' }}
+          AFT_RECOVERY_ISSUE_MAP: User sorts the book catalog by price low to high=BSQA-26,User attempts to checkout non-existent promotional item=BSQA-27
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_REPORTER_ACCOUNT_ID: ${{ secrets.JIRA_REPORTER_ACCOUNT_ID }}
           JIRA_PROJECT: BSQA
           GITHUB_SERVER_URL: ${{ github.server_url }}
           GITHUB_REPOSITORY: ${{ github.repository }}
