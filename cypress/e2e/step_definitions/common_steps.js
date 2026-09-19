@@ -15,11 +15,6 @@ Given('the user is on the books catalog page', () => {
   booksPage.verifyCatalogLoaded();
 });
 
-Given('I open the bookstore catalog page', () => {
-  booksPage.visitCatalog();
-  booksPage.verifyCatalogLoaded();
-});
-
 Given('the user is on the book detail page', () => {
   booksPage.visitCatalog();
   booksPage.clickFirstBook();
@@ -73,11 +68,6 @@ Then('the user should be on the book detail page', () => {
 
 Then('the book detail page should be visible', () => {
   bookDetailPage.verifyDetailPageLoaded();
-});
-
-Then('the checkout confirmation modal should be visible', () => {
-  cy.url().should('include', '/books/');
-  cy.get('body').should('be.visible');
 });
 
 Then('the books should be displayed in ascending order by price', () => {
