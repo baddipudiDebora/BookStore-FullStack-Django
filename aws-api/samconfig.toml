@@ -16,4 +16,4 @@ capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
 fail_on_empty_changeset = false
-parameter_overrides = "DatabaseUrl=replace-me DjangoSecretKey=replace-me ApiTokenTtlSeconds=86400"
+parameter_overrides = "DatabaseUrl=replace-me ApiTokenTtlSeconds=86400"

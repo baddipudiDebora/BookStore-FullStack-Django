@@ -27,11 +27,14 @@ def build_bag_contents(bag):
     bag_items = []
     total = Decimal("0")
     book_count = 0
+    book_ids = [str(item_id) for item_id in bag.keys()]
+    books_by_id = {
+        str(book.id): book for book in Book.objects.filter(pk__in=book_ids)
+    }
 
     for item_id, item_data in bag.items():
-        try:
-            book = Book.objects.get(pk=item_id)
-        except Book.DoesNotExist:
+        book = books_by_id.get(str(item_id))
+        if not book:
             continue
 
         if isinstance(item_data, int):

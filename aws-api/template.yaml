@@ -25,7 +25,6 @@ Parameters:
     Type: String
     Description: Secret key used by Django signing/auth token generation
     NoEcho: true
-    Default: replace-me-in-deployment
   ApiTokenTtlSeconds:
     Type: Number
     Description: JWT-like signed token TTL in seconds
