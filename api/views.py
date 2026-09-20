@@ -1,9 +1,12 @@
+import json
+
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from bag.contexts import bag_contents
+from books.forms import BookForm
 from books.models import Book, Category
 
 
@@ -31,6 +34,22 @@ def serialize_book(book):
 
 
 def books(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated or not request.user.is_superuser:
+            return JsonResponse({'detail': 'Superuser access required.'}, status=403)
+
+        try:
+            payload = json.loads(request.body)
+        except (TypeError, json.JSONDecodeError):
+            return JsonResponse({'detail': 'Request body must be valid JSON.'}, status=400)
+
+        form = BookForm(payload)
+        if not form.is_valid():
+            return JsonResponse({'errors': form.errors.get_json_data()}, status=400)
+
+        book = form.save()
+        return JsonResponse(serialize_book(book), status=201)
+
     queryset = Book.objects.select_related('category').all()
     query = request.GET.get('q')
     category_names = request.GET.get('category')
