@@ -10,7 +10,7 @@ describe('Catalog Sorting & All Books Journey', () => {
 
     // 3. Verify URL updates and wait for the sort selector to confirm the new page has fully loaded
     cy.url().should('include', 'sort=price')
-    cy.get('#sort-selector').should('have.value', 'price_asc')
+    cy.get('[data-cy="sort-selector"]').should('have.value', 'price_asc')
 
     // 4. Extract prices in natural DOM order and validate ascending order
     cy.get('.book-container .card').then($cards => {

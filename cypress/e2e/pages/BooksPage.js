@@ -8,9 +8,9 @@ export class BooksPage extends BasePage {
   // Selectors
   selectors = {
     booksHeader: 'h2.logo-font',
-    sortSelector: '#sort-selector',
-    bookCard: '.card',
-    bookContainer: '.book-container',
+    sortSelector: '[data-cy="sort-selector"]',
+    bookCard: '[data-cy="book-card"]',
+    bookContainer: '[data-cy="books-container"]',
     bookLink: 'a[href*="/books/"]',
     categoryBadge: '.category-badge',
     priceText: '.font-weight-bold',

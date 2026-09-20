@@ -1,5 +1,6 @@
 # 📚 Full-Stack Django Online Bookstore
 
+[![Cypress BDD Tests](https://github.com/baddipudiDebora/BookStore-FullStack-Django/actions/workflows/daily-tests.yml/badge.svg)](https://github.com/baddipudiDebora/BookStore-FullStack-Django/actions/workflows/daily-tests.yml)
 [![Heroku Deployment](https://img.shields.io/badge/Hosted%20On-Heroku-430098?style=flat&logo=heroku)](https://djangopractisedemo.herokuapp.com/)
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-3.1.1-092E20?style=flat&logo=django&logoColor=white)](https://www.djangoproject.com/)
@@ -161,6 +162,17 @@ JIRA_REPORTER_ACCOUNT_ID
 ```
 
 The AFT processor records the exact Cypress test case, commit ID, passing screenshot, and recovery comment on the matching automation Jira issue.
+
+The latest Mochawesome HTML report, screenshots, and videos are uploaded as the `cypress-test-artifacts` artifact for each workflow run. [View the Cypress workflow and its test-report artifacts.](https://github.com/baddipudiDebora/BookStore-FullStack-Django/actions/workflows/daily-tests.yml)
+
+### Resilient UI Locators
+
+Cypress uses stable `data-cy` attributes for key UI controls instead of coupling tests to Bootstrap classes or visual styling. For example:
+
+```javascript
+cy.get('[data-cy="sort-selector"]').select('price_asc');
+cy.get('[data-cy="book-card"]').first().click();
+```
 
  ## 🧪 Shift-Left Automation Strategy Matrix
 
