@@ -137,7 +137,7 @@ Unauthenticated and non-superuser POST requests are rejected with `403`. Invalid
 
 ## API on AWS (API Gateway + Lambda)
 
-An AWS migration scaffold now lives in `/home/runner/work/BookStore-FullStack-Django/BookStore-FullStack-Django/aws-api`.
+An AWS migration scaffold now lives in `aws-api/`.
 
 - **Architecture:** API Gateway (`/v1/*`) → resource-specific Lambda handlers (`books`, `categories`, `bag`, `auth`, `checkout`, `admin_orders`) → same relational DB via `DATABASE_URL`.
 - **Runtime approach:** Lambda handlers bootstrap Django settings/models for parity with existing validation and serialization logic.

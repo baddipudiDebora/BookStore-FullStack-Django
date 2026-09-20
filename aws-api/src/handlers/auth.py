@@ -100,7 +100,9 @@ def logout(event):
     except UnauthorizedError as exc:
         return json_response(401, {"detail": str(exc)})
 
-    return json_response(204, {})
+    response = json_response(204, {})
+    response["body"] = ""
+    return response
 
 
 def _policy(principal_id, effect, method_arn, context=None):

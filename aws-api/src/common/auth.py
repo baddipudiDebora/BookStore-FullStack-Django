@@ -31,7 +31,7 @@ def decode_token(token):
 def extract_bearer_token(headers):
     authorization = headers.get("authorization", "")
     if not authorization.lower().startswith("bearer "):
-        raise UnauthorizedError("****** required.")
+        raise UnauthorizedError("Authorization bearer token is required.")
     return authorization.split(" ", 1)[1].strip()
 
 

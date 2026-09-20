@@ -1,6 +1,7 @@
 import json
 
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from common.bag_logic import build_bag_contents, parse_bag_payload
 from common.bootstrap import setup_django
@@ -64,26 +65,30 @@ def handler(event, _context):
     except ValidationError as error:
         return json_response(400, {"errors": error.message_dict})
 
-    order.save()
-
+    normalized_items = []
     for item_id, item_data in bag.items():
         try:
             book = Book.objects.get(pk=item_id)
         except Book.DoesNotExist:
             return json_response(400, {"detail": f"Book {item_id} not found."})
+        normalized_items.append((book, item_data))
 
-        if isinstance(item_data, int):
-            OrderLineItem.objects.create(order=order, book=book, quantity=item_data)
-        else:
-            for size, quantity in (item_data.get("items_by_size") or {}).items():
-                OrderLineItem.objects.create(
-                    order=order,
-                    book=book,
-                    quantity=quantity,
-                    book_size=size,
-                )
+    with transaction.atomic():
+        order.save()
 
-    order.update_total()
+        for book, item_data in normalized_items:
+            if isinstance(item_data, int):
+                OrderLineItem.objects.create(order=order, book=book, quantity=item_data)
+            else:
+                for size, quantity in (item_data.get("items_by_size") or {}).items():
+                    OrderLineItem.objects.create(
+                        order=order,
+                        book=book,
+                        quantity=quantity,
+                        book_size=size,
+                    )
+
+        order.update_total()
     return json_response(
         201,
         {

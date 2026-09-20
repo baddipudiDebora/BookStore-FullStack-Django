@@ -1,13 +1,11 @@
-import os
 import sys
 import unittest
+from pathlib import Path
 
-REPO_ROOT = "/home/runner/work/BookStore-FullStack-Django/BookStore-FullStack-Django"
-SRC_PATH = f"{REPO_ROOT}/aws-api/src"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SRC_PATH = str(REPO_ROOT / "aws-api" / "src")
 if SRC_PATH not in sys.path:
     sys.path.insert(0, SRC_PATH)
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "online_book.settings")
 
 from common.request_utils import BadRequestError, parse_json_body  # noqa: E402
 
