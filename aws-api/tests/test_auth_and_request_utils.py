@@ -1,5 +1,6 @@
 import sys
 import unittest
+import base64
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -11,6 +12,15 @@ from common.request_utils import BadRequestError, parse_json_body  # noqa: E402
 
 
 class AwsApiHelpersTests(unittest.TestCase):
+    def test_parse_json_body_accepts_dict_body(self):
+        event = {"body": {"name": "Book"}}
+        self.assertEqual(parse_json_body(event), {"name": "Book"})
+
+    def test_parse_json_body_decodes_base64(self):
+        encoded = base64.b64encode(b'{\"name\": \"Book\"}').decode("utf-8")
+        event = {"body": encoded, "isBase64Encoded": True}
+        self.assertEqual(parse_json_body(event), {"name": "Book"})
+
     def test_parse_json_body_raises_on_invalid_json(self):
         event = {"body": "{invalid", "isBase64Encoded": False}
 

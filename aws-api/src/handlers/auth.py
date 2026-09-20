@@ -46,6 +46,11 @@ def register(event):
             400,
             {"errors": {"username": ["A user with that username already exists."]}},
         )
+    if User.objects.filter(email=payload["email"]).exists():
+        return json_response(
+            400,
+            {"errors": {"email": ["A user with that email already exists."]}},
+        )
 
     password_key = "pass" + "word"
     user = User.objects.create_user(

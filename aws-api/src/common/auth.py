@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.core import signing
 
 TOKEN_SALT = "bookstore-aws-api-token"
-TOKEN_MAX_AGE_SECONDS = int(os.environ.get("AWS_API_TOKEN_TTL_SECONDS", "86400"))
 
 
 class UnauthorizedError(Exception):
@@ -21,9 +20,13 @@ def issue_token(user):
     return signing.dumps(payload, salt=TOKEN_SALT, compress=True)
 
 
+def get_token_ttl_seconds():
+    return int(os.environ.get("AWS_API_TOKEN_TTL_SECONDS", "86400"))
+
+
 def decode_token(token):
     try:
-        return signing.loads(token, salt=TOKEN_SALT, max_age=TOKEN_MAX_AGE_SECONDS)
+        return signing.loads(token, salt=TOKEN_SALT, max_age=get_token_ttl_seconds())
     except signing.BadSignature as exc:
         raise UnauthorizedError("Invalid or expired token.") from exc
 

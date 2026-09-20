@@ -65,11 +65,15 @@ def handler(event, _context):
     except ValidationError as error:
         return json_response(400, {"errors": error.message_dict})
 
+    book_ids = [str(item_id) for item_id in bag.keys()]
+    books_by_id = {
+        str(book.id): book for book in Book.objects.filter(pk__in=book_ids)
+    }
+
     normalized_items = []
     for item_id, item_data in bag.items():
-        try:
-            book = Book.objects.get(pk=item_id)
-        except Book.DoesNotExist:
+        book = books_by_id.get(str(item_id))
+        if not book:
             return json_response(400, {"detail": f"Book {item_id} not found."})
         normalized_items.append((book, item_data))
 

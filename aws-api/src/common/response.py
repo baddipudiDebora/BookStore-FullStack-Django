@@ -7,7 +7,7 @@ def json_response(status_code, body=None):
         "headers": {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Content-Type,Authorization,X-Bag",
+            "Access-Control-Allow-Headers": "Content-Type,Authorization,X-Bag,x-bag",
             "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
         },
         "body": json.dumps(body if body is not None else {}),
