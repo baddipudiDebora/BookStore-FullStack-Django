@@ -45,8 +45,6 @@ Resources:
           Parameters:
             Location: openapi.yaml
       Auth:
-        DefaultAuthorizer: LambdaTokenAuthorizer
-        AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           LambdaTokenAuthorizer:
             FunctionPayloadType: REQUEST
@@ -66,8 +64,6 @@ Resources:
             RestApiId: !Ref BookstoreApi
             Path: /v1/books
             Method: GET
-            Auth:
-              Authorizer: NONE
         CreateBook:
           Type: Api
           Properties:
@@ -82,8 +78,6 @@ Resources:
             RestApiId: !Ref BookstoreApi
             Path: /v1/books/{book_id}
             Method: GET
-            Auth:
-              Authorizer: NONE
 
   CategoriesFunction:
     Type: AWS::Serverless::Function
@@ -96,8 +90,6 @@ Resources:
             RestApiId: !Ref BookstoreApi
             Path: /v1/categories
             Method: GET
-            Auth:
-              Authorizer: NONE
 
   BagFunction:
     Type: AWS::Serverless::Function
@@ -110,8 +102,6 @@ Resources:
             RestApiId: !Ref BookstoreApi
             Path: /v1/bag
             Method: GET
-            Auth:
-              Authorizer: NONE
 
   AuthFunction:
     Type: AWS::Serverless::Function
@@ -124,16 +114,12 @@ Resources:
             RestApiId: !Ref BookstoreApi
             Path: /v1/auth/register
             Method: POST
-            Auth:
-              Authorizer: NONE
         Login:
           Type: Api
           Properties:
             RestApiId: !Ref BookstoreApi
             Path: /v1/auth/login
             Method: POST
-            Auth:
-              Authorizer: NONE
         Logout:
           Type: Api
           Properties:
@@ -159,16 +145,12 @@ Resources:
             RestApiId: !Ref BookstoreApi
             Path: /v1/checkout
             Method: GET
-            Auth:
-              Authorizer: NONE
         PostCheckout:
           Type: Api
           Properties:
             RestApiId: !Ref BookstoreApi
             Path: /v1/checkout
             Method: POST
-            Auth:
-              Authorizer: NONE
 
   AdminOrdersFunction:
     Type: AWS::Serverless::Function

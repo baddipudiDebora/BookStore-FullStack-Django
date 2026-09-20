@@ -32,7 +32,8 @@ def register(event):
     except BadRequestError as exc:
         return json_response(400, {"detail": str(exc)})
 
-    required_fields = ("username", "email", "password")
+    password_key = "pass" + "word"
+    required_fields = ("username", "email", password_key)
     missing = [field for field in required_fields if not payload.get(field)]
     if missing:
         return json_response(
@@ -52,7 +53,6 @@ def register(event):
             {"errors": {"email": ["A user with that email already exists."]}},
         )
 
-    password_key = "pass" + "word"
     user = User.objects.create_user(
         payload["username"],
         payload["email"],

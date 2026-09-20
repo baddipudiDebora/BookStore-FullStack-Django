@@ -22,6 +22,7 @@ paths:
     get:
       tags: [books]
       summary: List, search, filter and sort books
+      security: []
       parameters:
         - in: query
           name: q
@@ -83,6 +84,7 @@ paths:
     get:
       tags: [books]
       summary: Retrieve one book
+      security: []
       parameters:
         - in: path
           name: book_id
@@ -102,6 +104,7 @@ paths:
     get:
       tags: [categories]
       summary: List categories
+      security: []
       responses:
         '200':
           description: Category list
@@ -119,6 +122,7 @@ paths:
     get:
       tags: [bag]
       summary: Retrieve current shopping bag
+      security: []
       description: |
         In Lambda, bag state is stateless and is supplied via `X-Bag` header
         as JSON matching Django session bag shape.
@@ -141,6 +145,7 @@ paths:
     post:
       tags: [auth]
       summary: Register a user
+      security: []
       requestBody:
         required: true
         content:
@@ -161,6 +166,7 @@ paths:
     post:
       tags: [auth]
       summary: Login user and return bearer token
+      security: []
       requestBody:
         required: true
         content:
@@ -201,6 +207,7 @@ paths:
     get:
       tags: [checkout]
       summary: Get checkout summary
+      security: []
       parameters:
         - in: header
           name: X-Bag
@@ -223,6 +230,7 @@ paths:
     post:
       tags: [checkout]
       summary: Place order
+      security: []
       description: Accepts shipping details and `bag` in payload when `X-Bag` header is omitted.
       requestBody:
         required: true

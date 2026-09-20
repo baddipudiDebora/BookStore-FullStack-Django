@@ -21,6 +21,11 @@ class AwsApiHelpersTests(unittest.TestCase):
         event = {"body": encoded, "isBase64Encoded": True}
         self.assertEqual(parse_json_body(event), {"name": "Book"})
 
+    def test_parse_json_body_rejects_invalid_base64(self):
+        event = {"body": "###", "isBase64Encoded": True}
+        with self.assertRaises(BadRequestError):
+            parse_json_body(event)
+
     def test_parse_json_body_raises_on_invalid_json(self):
         event = {"body": "{invalid", "isBase64Encoded": False}
 
