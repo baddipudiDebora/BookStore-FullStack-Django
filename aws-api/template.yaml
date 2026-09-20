@@ -1,0 +1,174 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: BookStore API Gateway + Lambda deployment (v1)
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 30
+    MemorySize: 512
+    CodeUri: src/
+    Environment:
+      Variables:
+        AWS_DJANGO_SETTINGS_MODULE: online_book.settings
+        DATABASE_URL: !Ref DatabaseUrl
+        SECRET_KEY: !Ref DjangoSecretKey
+        AWS_API_TOKEN_TTL_SECONDS: !Ref ApiTokenTtlSeconds
+
+Parameters:
+  DatabaseUrl:
+    Type: String
+    Description: PostgreSQL or SQLite DATABASE_URL for Lambda runtime
+    NoEcho: true
+  DjangoSecretKey:
+    Type: String
+    Description: Secret key used by Django signing/auth token generation
+    NoEcho: true
+  ApiTokenTtlSeconds:
+    Type: Number
+    Description: JWT-like signed token TTL in seconds
+    Default: 86400
+
+Resources:
+  BookstoreApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: bookstore-api
+      StageName: prod
+      OpenApiVersion: 3.0.1
+      MergeDefinitions: true
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization,X-Bag,x-bag'"
+        AllowOrigin: "'*'"
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: openapi.yaml
+      Auth:
+        Authorizers:
+          LambdaTokenAuthorizer:
+            FunctionPayloadType: REQUEST
+            FunctionArn: !GetAtt AuthAuthorizerFunction.Arn
+            Identity:
+              Headers:
+                - Authorization
+
+  BooksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers.books.handler
+      Events:
+        GetBooks:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/books
+            Method: GET
+        CreateBook:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/books
+            Method: POST
+            Auth:
+              Authorizer: LambdaTokenAuthorizer
+        GetBook:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/books/{book_id}
+            Method: GET
+
+  CategoriesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers.categories.handler
+      Events:
+        GetCategories:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/categories
+            Method: GET
+
+  BagFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers.bag.handler
+      Events:
+        GetBag:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/bag
+            Method: GET
+
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers.auth.handler
+      Events:
+        Register:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/auth/register
+            Method: POST
+        Login:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/auth/login
+            Method: POST
+        Logout:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/auth/logout
+            Method: POST
+            Auth:
+              Authorizer: LambdaTokenAuthorizer
+
+  AuthAuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers.auth.authorizer
+
+  CheckoutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers.checkout.handler
+      Events:
+        GetCheckout:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/checkout
+            Method: GET
+        PostCheckout:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/checkout
+            Method: POST
+
+  AdminOrdersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handlers.admin_orders.handler
+      Events:
+        GetAdminOrders:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BookstoreApi
+            Path: /v1/admin/orders
+            Method: GET
+            Auth:
+              Authorizer: LambdaTokenAuthorizer
+
+Outputs:
+  ApiBaseUrl:
+    Description: Base URL for deployed API stage
+    Value: !Sub https://${BookstoreApi}.execute-api.${AWS::Region}.amazonaws.com/prod

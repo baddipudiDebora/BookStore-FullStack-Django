@@ -135,6 +135,44 @@ Content-Type: application/json
 
 Unauthenticated and non-superuser POST requests are rejected with `403`. Invalid JSON or form data returns `400`.
 
+## API on AWS (API Gateway + Lambda)
+
+An AWS migration scaffold now lives in `aws-api/`.
+
+- **Architecture:** API Gateway (`/v1/*`) → resource-specific Lambda handlers (`books`, `categories`, `bag`, `auth`, `checkout`, `admin_orders`) → same relational DB via `DATABASE_URL`.
+- **Runtime approach:** Lambda handlers bootstrap Django settings/models for parity with existing validation and serialization logic.
+- **Auth flow:** `/v1/auth/login` returns a signed bearer token, validated by a Lambda authorizer for protected routes.
+- **Bag flow in stateless Lambda:** bag payload is supplied in `X-Bag` header (or `bag` field in checkout POST body) because Lambda does not keep Django session state.
+- **OpenAPI docs:** `aws-api/openapi.yaml` defines all migrated endpoints and is wired into SAM `template.yaml` via `DefinitionBody`.
+
+### Deploy with SAM
+
+```bash
+cd aws-api
+sam validate
+sam build
+sam deploy --guided
+```
+
+`samconfig.toml` is included with placeholder defaults only. Use real values for `DatabaseUrl` and `DjangoSecretKey` during deployment (for example via parameter overrides or a secrets workflow).
+
+### View Swagger/OpenAPI locally
+
+```bash
+python -m http.server 8000
+# Open http://localhost:8000/aws-api/docs/swagger-ui/
+```
+
+Optional OpenAPI validation:
+
+```bash
+npx @apidevtools/swagger-cli validate aws-api/openapi.yaml
+```
+
+### Relationship to current Django `/api/v1/`
+
+The existing Django `api/` app and `/api/v1/` routes are intentionally kept in place and unchanged in this migration PR. The AWS `/v1/` API is added side-by-side so frontend cutover/deprecation can be decided in a follow-up once integration testing is complete.
+
 ## Automated Testing
 
 Run the Django tests with:
@@ -205,6 +243,7 @@ cy.get('[data-cy="book-card"]').first().click();
 │   ├── fixtures/                   # Test data assets
 │   └── support/                    # Global configurations & custom commands
 ├── api/                            # Versioned JSON API views, URLs, and tests
+├── aws-api/                        # SAM-based API Gateway + Lambda API migration
 ├── cypress.config.js               # Cypress configuration & preprocessor bindings
 ├── scripts/aft-jira.js             # Jira automation failure tracking
 ├── package.json
