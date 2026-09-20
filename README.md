@@ -95,6 +95,73 @@ Consolidates all backend administrative operations, product catalog management, 
    ```bash
    git clone [https://github.com/baddipudiDebora/BookStore-FullStack-Django.git](https://github.com/baddipudiDebora/BookStore-FullStack-Django.git)
    cd BookStore-FullStack-Django
+   python -m venv venv
+   .\venv\Scripts\Activate.ps1
+   pip install -r requirements.txt
+   python manage.py migrate
+   python manage.py loaddata books_fixture.json
+   python manage.py runserver
+   ```
+
+## API Endpoints
+
+The versioned JSON API is available under `/api/v1/` and uses the same database as the server-rendered UI.
+
+| Method | Endpoint | Access | Purpose |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/v1/books/` | Public | List, search, filter, and sort books |
+| `GET` | `/api/v1/books/<id>/` | Public | Retrieve one book |
+| `GET` | `/api/v1/categories/` | Public | List categories |
+| `GET` | `/api/v1/bag/` | Session | Retrieve the current shopping bag |
+| `POST` | `/api/v1/books/` | Superuser | Create a book from a JSON payload |
+
+Example book creation request:
+
+```http
+POST /api/v1/books/
+Content-Type: application/json
+```
+
+```json
+{
+  "category": 1,
+  "sku": "API-001",
+  "name": "API Book",
+  "description": "Created through the bookstore API.",
+  "price": "18.99"
+}
+```
+
+Unauthenticated and non-superuser POST requests are rejected with `403`. Invalid JSON or form data returns `400`.
+
+## Automated Testing
+
+Run the Django tests with:
+
+```bash
+python manage.py test
+```
+
+Run the Cypress BDD suite with:
+
+```bash
+npm ci
+npm run cy:run
+```
+
+Current Gherkin coverage includes catalog sorting, checkout navigation, API GET endpoints, and unauthorized API POST behavior. Authorized book creation is covered by the Django API tests.
+
+GitHub Actions loads `books_fixture.json` before running the test suite. The workflow also integrates with Jira AFT when these secrets are configured:
+
+```text
+JIRA_BASE_URL
+JIRA_USER_EMAIL
+JIRA_API_TOKEN
+JIRA_REPORTER_ACCOUNT_ID
+```
+
+The AFT processor records the exact Cypress test case, commit ID, passing screenshot, and recovery comment on the matching automation Jira issue.
+
  ## 🧪 Shift-Left Automation Strategy Matrix
 
 | Epic | Story ID | User Story Title | Test Strategy | Recommended Target Level | Shift-Left Benefit & Automation Rationale |
@@ -115,12 +182,18 @@ Consolidates all backend administrative operations, product catalog management, 
 ├── cypress/
 │   ├── e2e/
 │   │   ├── features/               # Human-readable Gherkin .feature files
+│   │   │   ├── api_get.feature
+│   │   │   ├── api_post.feature
 │   │   │   └── catalog_sorting.feature
 │   │   └── step_definitions/       # Cypress implementation logic
+│   │       ├── api_get.js
+│   │       ├── api_post.js
 │   │       └── catalog_sorting.js
 │   ├── fixtures/                   # Test data assets
 │   └── support/                    # Global configurations & custom commands
+├── api/                            # Versioned JSON API views, URLs, and tests
 ├── cypress.config.js               # Cypress configuration & preprocessor bindings
+├── scripts/aft-jira.js             # Jira automation failure tracking
 ├── package.json
 └── README.md
 ---
