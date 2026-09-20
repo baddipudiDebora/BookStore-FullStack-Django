@@ -20,7 +20,6 @@ Parameters:
     Type: String
     Description: PostgreSQL or SQLite DATABASE_URL for Lambda runtime
     NoEcho: true
-    Default: sqlite:////tmp/bookstore.db
   DjangoSecretKey:
     Type: String
     Description: Secret key used by Django signing/auth token generation
@@ -38,6 +37,10 @@ Resources:
       StageName: prod
       OpenApiVersion: 3.0.1
       MergeDefinitions: true
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization,X-Bag,x-bag'"
+        AllowOrigin: "'*'"
       DefinitionBody:
         Fn::Transform:
           Name: AWS::Include

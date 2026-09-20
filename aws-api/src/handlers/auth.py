@@ -129,6 +129,7 @@ def _policy(principal_id, effect, method_arn, context=None):
 
 def authorizer(event, _context):
     setup_django()
+    User = get_user_model()
 
     method_arn = event.get("methodArn", "*")
     headers = {str(k).lower(): v for k, v in (event.get("headers") or {}).items()}
@@ -136,15 +137,16 @@ def authorizer(event, _context):
     try:
         token = extract_bearer_token(headers)
         claims = decode_token(token)
+        user = User.objects.get(pk=claims.get("user_id"))
         return _policy(
-            claims.get("user_id", "anonymous"),
+            user.id,
             "Allow",
             method_arn,
             {
-                "user_id": str(claims.get("user_id", "")),
-                "username": claims.get("username", ""),
-                "is_superuser": str(bool(claims.get("is_superuser", False))).lower(),
+                "user_id": str(user.id),
+                "username": user.username,
+                "is_superuser": str(bool(user.is_superuser)).lower(),
             },
         )
-    except UnauthorizedError:
+    except (UnauthorizedError, User.DoesNotExist):
         return _policy("anonymous", "Deny", method_arn)

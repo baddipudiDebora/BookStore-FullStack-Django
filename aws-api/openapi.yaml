@@ -194,8 +194,8 @@ paths:
   /v1/auth/logout:
     post:
       tags: [auth]
-      summary: Logout user (token required)
-      description: API Gateway authorizer enforces token validity; on success Lambda returns 204 and clients should discard the bearer token client-side.
+      summary: Logout acknowledgement (token required)
+      description: API Gateway authorizer enforces token validity; on success Lambda returns 204. This endpoint does not server-revoke tokens, so clients must discard the bearer token client-side.
       security:
         - BearerAuth: []
       responses:
