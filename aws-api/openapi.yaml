@@ -1,0 +1,427 @@
+openapi: 3.0.1
+info:
+  title: BookStore AWS API
+  version: 1.0.0
+  description: |
+    API Gateway + Lambda API surface for the BookStore project.
+    This mirrors the existing Django `/api/v1/` endpoints under `/v1`.
+servers:
+  - url: https://example.execute-api.us-east-1.amazonaws.com/prod
+    description: Example API Gateway stage URL
+
+tags:
+  - name: books
+  - name: categories
+  - name: bag
+  - name: auth
+  - name: checkout
+  - name: admin
+
+paths:
+  /v1/books:
+    get:
+      tags: [books]
+      summary: List, search, filter and sort books
+      parameters:
+        - in: query
+          name: q
+          schema: { type: string }
+          description: Search string matched against name and description
+        - in: query
+          name: category
+          schema: { type: string }
+          description: Comma-separated category names
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [name, category, price, rating]
+        - in: query
+          name: direction
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: Book list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: { type: integer }
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+    post:
+      tags: [books]
+      summary: Create a new book (superuser only)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookRequest'
+      responses:
+        '201':
+          description: Book created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Superuser access required
+
+  /v1/books/{book_id}:
+    get:
+      tags: [books]
+      summary: Retrieve one book
+      parameters:
+        - in: path
+          name: book_id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Book details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found
+
+  /v1/categories:
+    get:
+      tags: [categories]
+      summary: List categories
+      responses:
+        '200':
+          description: Category list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+
+  /v1/bag:
+    get:
+      tags: [bag]
+      summary: Retrieve current shopping bag
+      description: |
+        In Lambda, bag state is stateless and is supplied via `X-Bag` header
+        as JSON matching Django session bag shape.
+      parameters:
+        - in: header
+          name: X-Bag
+          required: false
+          schema:
+            type: string
+          description: JSON-encoded bag payload, e.g. `{ "12": 2 }`
+      responses:
+        '200':
+          description: Bag summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BagSummary'
+
+  /v1/auth/register:
+    post:
+      tags: [auth]
+      summary: Register a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/auth/login:
+    post:
+      tags: [auth]
+      summary: Login user and return bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string }
+                  user:
+                    allOf:
+                      - $ref: '#/components/schemas/User'
+                      - type: object
+                        properties:
+                          is_superuser: { type: boolean }
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/auth/logout:
+    post:
+      tags: [auth]
+      summary: Logout user (token required)
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Logout acknowledged
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /v1/checkout:
+    get:
+      tags: [checkout]
+      summary: Get checkout summary
+      parameters:
+        - in: header
+          name: X-Bag
+          required: false
+          schema:
+            type: string
+          description: JSON-encoded bag payload
+      responses:
+        '200':
+          description: Totals summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  book_count: { type: integer }
+                  total: { type: string }
+                  delivery: { type: string }
+                  grand_total: { type: string }
+    post:
+      tags: [checkout]
+      summary: Place order
+      description: Accepts shipping details and `bag` in payload when `X-Bag` header is omitted.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/admin/orders:
+    get:
+      tags: [admin]
+      summary: List orders (superuser only)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Order list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AdminOrder'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: Superuser access required
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Token
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail: { type: string }
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items: { type: string }
+    UnauthorizedError:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail: { type: string }
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        username: { type: string }
+        email: { type: string, format: email }
+
+    Category:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        friendly_name:
+          type: string
+          nullable: true
+
+    Book:
+      type: object
+      properties:
+        id: { type: integer }
+        sku:
+          type: string
+          nullable: true
+        name: { type: string }
+        description: { type: string }
+        category:
+          type: string
+          nullable: true
+        has_sizes:
+          type: boolean
+          nullable: true
+        price: { type: string }
+        rating:
+          type: string
+          nullable: true
+        image_url:
+          type: string
+          nullable: true
+        image:
+          type: string
+          nullable: true
+
+    CreateBookRequest:
+      type: object
+      required: [name, description, price]
+      properties:
+        category: { type: integer }
+        sku: { type: string }
+        name: { type: string }
+        description: { type: string }
+        has_sizes: { type: boolean }
+        price: { type: string }
+        rating: { type: string }
+        image_url: { type: string }
+
+    RegisterRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username: { type: string }
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string }
+
+    BagItem:
+      type: object
+      properties:
+        book_id: { type: string }
+        quantity: { type: integer }
+        size:
+          type: string
+          nullable: true
+        book:
+          $ref: '#/components/schemas/Book'
+
+    BagSummary:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BagItem'
+        total: { type: string }
+        book_count: { type: integer }
+        delivery: { type: string }
+        free_delivery_delta: { type: string }
+        grand_total: { type: string }
+
+    CheckoutRequest:
+      type: object
+      required:
+        - full_name
+        - email
+        - phone_number
+        - country
+        - town_or_city
+        - street_address1
+      properties:
+        full_name: { type: string }
+        email: { type: string, format: email }
+        phone_number: { type: string }
+        country: { type: string }
+        postcode: { type: string }
+        town_or_city: { type: string }
+        street_address1: { type: string }
+        street_address2: { type: string }
+        county: { type: string }
+        stripe_pid: { type: string }
+        bag:
+          type: object
+          additionalProperties: true
+
+    CheckoutResponse:
+      type: object
+      properties:
+        order_number: { type: string }
+        grand_total: { type: string }
+
+    AdminOrder:
+      type: object
+      properties:
+        order_number: { type: string }
+        email: { type: string, format: email }
+        grand_total: { type: string }
+        date: { type: string, format: date-time }
