@@ -166,22 +166,23 @@ The AFT processor records the exact Cypress test case, commit ID, passing screen
 
 | Epic | Story ID | User Story Title | Test Strategy | Recommended Target Level | Shift-Left Benefit & Automation Rationale |
 | :--- | :---: | :--- | :---: | :--- | :--- |
-| **Epic 1: User Identity** | **US-01** | Registration & Login | `API First` | `POST /api/register/`<br>`POST /api/login/` | Validates payload schema, DB user creation, duplicate rejections (400 Bad Request), and auth token generation without rendering forms. |
-| **Epic 1: User Identity** | **US-02** | Session & Auth Management | `API First` | `GET /api/checkout/`<br>`POST /api/logout/` | Verifies 401/403 middleware security headers and session token invalidation fast without UI navigation. |
-| **Epic 1: User Identity** | **US-03** | Admin Authorization | `API First` | REST API with Role Tokens | Directly tests backend Role-Based Access Control (RBAC). Ensures API blocks unauthorized access regardless of UI hiding. |
-| **Epic 2: Storefront & Cart** | **US-04** | Browse, Search & Sort | `API First` | `GET /api/books/?search=...`<br>`GET /api/books/?sort=...` | Validates Django ORM filtering, search queries, and `.order_by()` JSON structure significantly faster than DOM parsing. |
+| **Epic 1: User Identity** | **US-01** | Registration & Login | `API First` | `POST /api/v1/auth/register/`<br>`POST /api/v1/auth/login/` | Validates user creation, duplicate rejection, credential validation, and session authentication. |
+| **Epic 1: User Identity** | **US-02** | Session & Auth Management | `GET /api/v1/checkout/`<br>`POST /api/v1/auth/logout/` | Verifies session-protected writes and checkout session behavior. |
+| **Epic 1: User Identity** | **US-03** | Admin Authorization | `PATCH/DELETE /api/v1/books/{id}/`<br>`GET /api/v1/admin/orders/` | Verifies superuser-only catalog mutation and order visibility. |
+| **Epic 2: Storefront & Cart** | **US-04** | Browse, Search & Sort | `GET /api/v1/books/?q=...`<br>`GET /api/v1/books/?sort=...` | Validates Django ORM filtering, search queries, and ordering in JSON responses. |
 | **Epic 2: Storefront & Cart** | **US-05** | Product Details View | `UI Reserved` | Cypress / Playwright DOM | Validates dynamic visual page layout, cover image rendering, dynamic routing, and DOM element accessibility. |
 | **Epic 2: Storefront & Cart** | **US-06** | Cart Operations | `Hybrid` | API State + UI Badge Check | API handles item totals and state math; UI smoke test validates real-time shopping cart badge counter updates. |
-| **Epic 2: Storefront & Cart** | **US-07** | Checkout & Orders | `Hybrid` | API Process + 1 UI Smoke | API tests address payload processing & checkout submission; single E2E UI flow tests end-to-end user checkout experience. |
-| **Epic 3: Admin & Fulfillment**| **US-08** | Catalog CRUD Operations | `API First` | `POST / PUT / DELETE /api/books/` | Bypasses admin UI to directly test DB persistence, field validation errors (e.g., negative price), and object deletion. |
-| **Epic 3: Admin & Fulfillment**| **US-09** | Inventory Stock Control | `API First` | `PATCH /api/books/{id}/` | Validates zero-stock boundary limits and ensures backend returns 400 Out of Stock before frontend controls are built. |
-| **Epic 3: Admin & Fulfillment**| **US-10** | Order Fulfillment | `API First` | `GET /api/admin/orders/` | Directly validates order payload structures, status transition flags, and database record creation. |  
+| **Epic 2: Storefront & Cart** | **US-07** | Checkout & Orders | `Hybrid` | `GET/POST /api/v1/checkout/` + 1 UI smoke | API tests address checkout totals and order creation; the UI flow validates the customer journey. |
+| **Epic 3: Admin & Fulfillment**| **US-08** | Catalog CRUD Operations | `API First` | `POST/PATCH/DELETE /api/v1/books/` | Tests superuser book creation, partial updates, deletion, and validation errors. |
+| **Epic 3: Admin & Fulfillment**| **US-09** | Inventory Stock Control | `API First` | `PATCH /api/v1/books/{id}/` | Provides the catalog mutation boundary for inventory fields. |
+| **Epic 3: Admin & Fulfillment**| **US-10** | Order Fulfillment | `API First` | `GET /api/v1/admin/orders/` | Validates superuser-only order listing and order totals. |
 ---
 ## 📁 Project Directory Structure
 ```text
 ├── cypress/
 │   ├── e2e/
 │   │   ├── features/               # Human-readable Gherkin .feature files
+│   │   │   ├── api_matrix.feature
 │   │   │   ├── api_get.feature
 │   │   │   ├── api_post.feature
 │   │   │   └── catalog_sorting.feature
