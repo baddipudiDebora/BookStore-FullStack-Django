@@ -128,7 +128,7 @@ paths:
           required: false
           schema:
             type: string
-          description: JSON-encoded bag payload, e.g. `{ "12": 2 }`
+          description: 'JSON-encoded bag payload, e.g. `{ "12": 2 }`'
       responses:
         '200':
           description: Bag summary
