@@ -195,6 +195,7 @@ paths:
     post:
       tags: [auth]
       summary: Logout user (token required)
+      description: Validates the token and returns 204; clients should discard the bearer token client-side.
       security:
         - BearerAuth: []
       responses:
@@ -291,7 +292,11 @@ components:
                 type: object
                 additionalProperties:
                   type: array
-                  items: { type: string }
+                  items:
+                    type: object
+                    properties:
+                      message: { type: string }
+                      code: { type: string }
     UnauthorizedError:
       description: Authentication failed
       content:

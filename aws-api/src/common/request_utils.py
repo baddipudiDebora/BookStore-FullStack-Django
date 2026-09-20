@@ -38,8 +38,8 @@ def parse_json_body(event):
 
     if event.get("isBase64Encoded"):
         try:
-            body = base64.b64decode(body).decode("utf-8")
-        except (TypeError, ValueError) as exc:
+            body = base64.b64decode(body, validate=True).decode("utf-8")
+        except (TypeError, ValueError, UnicodeDecodeError) as exc:
             raise BadRequestError("Request body must be valid JSON.") from exc
 
     if isinstance(body, dict):
