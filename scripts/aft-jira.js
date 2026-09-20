@@ -118,14 +118,28 @@ function testLabel(test) {
 }
 
 async function findIssuesByJql(jql, maxResults = 100) {
-  const result = await jiraRequest(`/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}&maxResults=${maxResults}&fields=summary,status,labels,description`);
+  const result = await jiraRequest(`/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}&maxResults=${maxResults}&fields=summary,status,labels,description,comment`);
   return result.issues || [];
 }
 
 async function findIssueByKey(issueKey) {
-  const issue = await jiraRequest(`/rest/api/3/issue/${encodeURIComponent(issueKey)}?fields=summary,status,labels,description`);
-  if (issue.fields.status?.statusCategory?.key === 'done') return null;
+  const issue = await jiraRequest(`/rest/api/3/issue/${encodeURIComponent(issueKey)}?fields=summary,status,labels,description,comment,reporter`);
+  if (!isOpenIssue(issue)) return null;
   return issue;
+}
+
+function isOpenIssue(issue) {
+  const status = issue.fields.status || {};
+  return status.statusCategory?.key !== 'done'
+    && !/closed|resolved|done/i.test(status.name || '');
+}
+
+function commentText(comment) {
+  return JSON.stringify(comment.body || comment);
+}
+
+function hasComment(issue, marker) {
+  return (issue.fields.comment?.comments || []).some((comment) => commentText(comment).includes(marker));
 }
 
 function uniqueIssues(issues) {
@@ -150,7 +164,7 @@ async function findIssues(test) {
     matchingIssues.push(await findIssueByKey(mappedIssueKey));
   }
 
-  return uniqueIssues(matchingIssues.filter(Boolean));
+  return uniqueIssues(matchingIssues.filter(Boolean).filter(isOpenIssue));
 }
 
 async function createIssue(test) {
@@ -192,12 +206,16 @@ async function addLabel(issue, label) {
 }
 
 async function setReporter(issueKey) {
-  if (!jiraReporterAccountId) return;
   await jiraRequest(`/rest/api/3/issue/${issueKey}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ fields: { reporter: { accountId: jiraReporterAccountId } } }),
   });
+
+  const issue = await jiraRequest(`/rest/api/3/issue/${issueKey}?fields=reporter`);
+  if (issue.fields.reporter?.accountId !== jiraReporterAccountId) {
+    throw new Error(`Jira reporter was not set to JIRA_REPORTER_ACCOUNT_ID for ${issueKey}.`);
+  }
 }
 
 async function attachScreenshot(issueKey, screenshotPath) {
@@ -230,6 +248,11 @@ async function processFailure(test) {
   const issues = await findIssues(test);
   const failureIssues = issues.length ? issues : [await createIssue(test)];
   for (const issue of failureIssues) {
+    if (!isOpenIssue(issue)) continue;
+    if (hasComment(issue, `Commit: ${commitId}`)) {
+      console.log(`AFT failure already recorded for ${issue.key} at commit ${commitId}.`);
+      continue;
+    }
     await setReporter(issue.key);
     await addComment(issue.key, `Exact test case still failing: ${testIdentity(test)}. Commit: ${commitId}. Run: ${runUrl}`);
     console.log(`AFT failure recorded in ${issue.key}`);
@@ -245,6 +268,11 @@ async function processRecovery(test) {
 
   const screenshotPath = getScreenshotForTest(test);
   for (const issue of issues) {
+    if (!isOpenIssue(issue)) continue;
+    if (hasComment(issue, `Exact test case now passed: ${testIdentity(test)}. Commit: ${commitId}.`)) {
+      console.log(`AFT recovery already recorded for ${issue.key} at commit ${commitId}.`);
+      continue;
+    }
     await setReporter(issue.key);
     await attachScreenshot(issue.key, screenshotPath);
     await addComment(issue.key, `Exact test case now passed: ${testIdentity(test)}. Commit: ${commitId}. Passing-run screenshot attached. Run: ${runUrl}`);
