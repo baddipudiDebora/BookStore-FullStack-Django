@@ -60,11 +60,12 @@ def handler(event, _context):
                 sort_field = f"-{sort_field}"
             queryset = queryset.order_by(sort_field)
 
+        books_list = list(queryset)
         return json_response(
             200,
             {
-                "count": queryset.count(),
-                "results": [serialize_book(book) for book in queryset],
+                "count": len(books_list),
+                "results": [serialize_book(book) for book in books_list],
             },
         )
 
